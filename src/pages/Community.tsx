@@ -10,6 +10,7 @@ import { Separator } from "@/components/ui/separator";
 import { useUser } from "@clerk/clerk-react";
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import { postsApi } from '@/lib/api';
 
 // Add RGB ring animation styles
 const rgbRingStyles = `
@@ -124,13 +125,7 @@ const Community: React.FC = () => {
   const fetchPosts = async () => {
     try {
       setLoading(true);
-      const response = await fetch('/api/posts');
-      
-      if (!response.ok) {
-        throw new Error('Failed to fetch posts');
-      }
-      
-      const data = await response.json();
+      const data = await postsApi.getPosts();
       
       // Add timeAgo to each post
       const postsWithTimeAgo = data.posts.map((post: Post) => ({
@@ -153,21 +148,11 @@ const Community: React.FC = () => {
     if (!postText.trim()) return;
     
     try {
-      const response = await fetch('/api/posts', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          author,
-          avatar: avatarLetter,
-          content: postText
-        }),
+      await postsApi.createPost({
+        author,
+        avatar: avatarLetter,
+        content: postText
       });
-      
-      if (!response.ok) {
-        throw new Error('Failed to create post');
-      }
       
       // Clear input and refresh posts
       setPostText('');
@@ -181,20 +166,7 @@ const Community: React.FC = () => {
   // Like or dislike a post
   const reactToPost = async (id: number, action: 'like' | 'dislike') => {
     try {
-      const response = await fetch('/api/posts', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          id,
-          action
-        }),
-      });
-      
-      if (!response.ok) {
-        throw new Error(`Failed to ${action} post`);
-      }
+      await postsApi.reactToPost(id, action);
       
       // Update UI optimistically
       setPosts(posts.map(post => {
