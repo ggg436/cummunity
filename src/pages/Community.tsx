@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { useUser } from "@clerk/clerk-react";
+import { Search } from "lucide-react";
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { postsApi } from '@/lib/api';
@@ -301,7 +302,7 @@ const Community: React.FC = () => {
                       className="pl-10 border-gray-200 text-sm font-medium placeholder:text-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     />
                     <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
-                      🔍
+                      <Search size={16} />
                     </span>
                   </div>
                 </div>
